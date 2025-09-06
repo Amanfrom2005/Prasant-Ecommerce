@@ -1,10 +1,11 @@
-import express from "express";
-import { protectRoute } from "../middleware/auth.middleware.js";
-import { checkoutSuccess, createCheckoutSession } from "../controllers/payment.controller.js";
+// backend/routes/payment.routes.js
+import { Router } from "express";
+import { createCheckoutOrder, verifyPayment } from "../controllers/payment.controller.js";
+import { protectRoute } from "../middleware/auth.middleware.js"; // your auth middleware
 
-const router = express.Router();
+const router = Router();
 
-router.post("/create-checkout-session", protectRoute, createCheckoutSession);
-router.post("/checkout-success", protectRoute, checkoutSuccess);
+router.post("/create-order", protectRoute, createCheckoutOrder);
+router.post("/verify-payment", protectRoute, verifyPayment);
 
 export default router;

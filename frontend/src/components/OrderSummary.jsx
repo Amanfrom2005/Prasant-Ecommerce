@@ -2,37 +2,52 @@ import { motion } from "framer-motion";
 import { useCartStore } from "../stores/useCartStore";
 import { Link } from "react-router-dom";
 import { MoveRight } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
 
-const stripePromise = loadStripe(
-	"pk_test_51KZYccCoOZF2UhtOwdXQl3vcizup20zqKqT9hVUIsVzsdBrhqbUI2fE0ZdEVLdZfeHjeyFXtqaNsyCJCmZWnjNZa00PzMAjlcL"
-);
 
 const OrderSummary = () => {
-	const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
+  const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
 
-	const savings = subtotal - total;
-	const formattedSubtotal = subtotal.toFixed(2);
-	const formattedTotal = total.toFixed(2);
-	const formattedSavings = savings.toFixed(2);
+  const savings = subtotal - total;
+  const formattedSubtotal = subtotal.toFixed(2);
+  const formattedTotal = total.toFixed(2);
+  const formattedSavings = savings.toFixed(2);
 
-	const handlePayment = async () => {
-		const stripe = await stripePromise;
-		const res = await axios.post("/payments/create-checkout-session", {
-			products: cart,
-			couponCode: coupon ? coupon.code : null,
-		});
+  const handlePayment = async () => {
+    try {
+      const res = await axios.post("/payments/create-order", {
+        products: cart,
+        couponCode: coupon ? coupon.code : null,
+      });
 
-		const session = res.data;
-		const result = await stripe.redirectToCheckout({
-			sessionId: session.id,
-		});
+      const { orderId, amount, currency, key } = res.data;
 
-		if (result.error) {
-			console.error("Error:", result.error);
-		}
-	};
+      const options = {
+        key,
+        amount,
+        currency,
+        name: "My Store",
+        description: "Order Payment",
+        order_id: orderId,
+        handler: async function (response) {
+          // Verify payment with backend
+          await axios.post("/payments/verify", response);
+          alert("Payment successful!");
+        },
+        prefill: {
+          name: "Customer Name",
+          email: "customer@example.com",
+          contact: "9999999999",
+        },
+        theme: { color: "#10B981" },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
+  };
 
 	return (
 		<motion.div

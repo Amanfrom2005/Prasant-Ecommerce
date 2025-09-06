@@ -39,6 +39,9 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
+RAZORPAY_KEY_ID=rzp_test_4GI77KLfXcjflR
+RAZORPAY_KEY_SECRET=ABjXmKuFkYY6PgEhAdIt0uU9
+
 STRIPE_SECRET_KEY=your_stripe_secret_key
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development

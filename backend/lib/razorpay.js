@@ -1,6 +1,6 @@
-// backend/lib/razorpay.js
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 export const razorpay = new Razorpay({
