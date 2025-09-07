@@ -59,7 +59,7 @@ npm install
 npm run dev
 ```
 
-### Run backend locally
+### Run frontend locally
 
 ```shell
 cd frontend
